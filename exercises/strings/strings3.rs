@@ -19,7 +19,7 @@ fn compose_me(input: &str) -> String {
 fn replace_me(input: &str) -> String {
     // TODO: Replace "cars" in the string with "balloons"!
     let mut x = input.replace("cars","balloons");
-    x
+    x.to_string()
 }
 #[cfg(test)]
 mod tests {
