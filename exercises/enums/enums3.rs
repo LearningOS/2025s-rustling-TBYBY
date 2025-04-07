@@ -20,7 +20,7 @@ struct Point {
     y: u8,
 }
 
-struct State {
+struct State {  
     color: (u8, u8, u8),
     position: Point,
     quit: bool,
@@ -47,7 +47,22 @@ impl State {
         // variants
         // Remember: When passing a tuple as a function argument, you'll need
         // extra parentheses: fn function((t, u, p, l, e))
-
+        match message{
+            Message::ChangeColor(x,y,z) => {
+                let color:(u8, u8, u8) = (x,y,z);
+                self.change_color(color);
+            },
+            Message::Echo(s) => {
+                self.echo(s);
+            },
+            Message::Move(z) => {
+                self.move_position(z);
+            },
+            Message::Quit => {
+                self.quit();
+            }
+        }
+    }
 }
 
 #[cfg(test)]
