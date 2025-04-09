@@ -27,7 +27,6 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
 
 // Your task is to complete this implementation and return an Ok result of inner
 // type Color. You need to create an implementation for a tuple of three
@@ -38,9 +37,25 @@ enum IntoColorError {
 // that correct RGB color values must be integers in the 0..=255 range.
 
 // Tuple implementation
+// 必须要在 255 值之内
+// 不能为负数
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        match tuple{
+            (0..255, 0..255, 0..255) => {
+                let result = Color{
+                    red:tuple.0 as u8,
+                    green: tuple.1 as u8,
+                    blue: tuple.2 as u8,
+                };
+                Ok(result)
+            },
+            (i16::MIN..=-1_i16, _, _) | (255_i16..=i16::MAX, _, _) => Err(IntoColorError::IntConversion),
+            (0_i16..=254_i16, i16::MIN..=-1_i16, _)=> Err(IntoColorError::IntConversion),
+            (0_i16..=254_i16, 0_i16..=254_i16, i16::MIN..=-1_i16) | (0_i16..=254_i16, 0_i16..=254_i16, 255_i16..=i16::MAX) => Err(IntoColorError::IntConversion),
+            (0_i16..=254_i16, 255_i16..=i16::MAX, _) => Err(IntoColorError::IntConversion),
+        }
     }
 }
 
@@ -48,6 +63,20 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        match arr{
+            [0..255, 0..255, 0..255] => {
+                let result = Color{
+                    red:arr[0] as u8,
+                    green: arr[1] as u8,
+                    blue: arr[2] as u8,
+                };
+                Ok(result)
+            },
+            [i16::MIN..=-1_i16, _, _] | [255_i16..=i16::MAX, _, _] => Err(IntoColorError::IntConversion),
+            [0_i16..=254_i16, i16::MIN..=-1_i16, _]=> Err(IntoColorError::IntConversion),
+            [0_i16..=254_i16, 0_i16..=254_i16, i16::MIN..=-1_i16] | [0_i16..=254_i16, 0_i16..=254_i16, 255_i16..=i16::MAX] => Err(IntoColorError::IntConversion),
+            [0_i16..=254_i16, 255_i16..=i16::MAX, _] => Err(IntoColorError::IntConversion),
+        }
     }
 }
 
@@ -55,6 +84,24 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len() != 3 {
+           return Err(IntoColorError::BadLen)
+        }
+        match slice{
+            [0..255, 0..255, 0..255] => {
+                let result = Color{
+                    red:slice[0] as u8,
+                    green: slice[1] as u8,
+                    blue: slice[2] as u8,
+                };
+                Ok(result)
+            },
+            [i16::MIN..=-1_i16, _, _] | [255_i16..=i16::MAX, _, _] => Err(IntoColorError::IntConversion),
+            [0_i16..=254_i16, i16::MIN..=-1_i16, _]=> Err(IntoColorError::IntConversion),
+            [0_i16..=254_i16, 0_i16..=254_i16, i16::MIN..=-1_i16] | [0_i16..=254_i16, 0_i16..=254_i16, 255_i16..=i16::MAX] => Err(IntoColorError::IntConversion),
+            [0_i16..=254_i16, 255_i16..=i16::MAX, _] => Err(IntoColorError::IntConversion),
+            _ => Err(IntoColorError::IntConversion),
+        }
     }
 }
 
