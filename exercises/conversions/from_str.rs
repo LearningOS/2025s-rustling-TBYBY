@@ -57,15 +57,25 @@ impl FromStr for Person {
         // 5 当分割的时候存在问题，则需返回错误
         // 6 如果一切顺利，返回 Person
         if s.len() == 0 {
-            return Err(ParsePersonError::Empty)
+            return Err(ParsePersonError::Empty);
         }
         let result: Vec<&str> = s.split(',').collect();
-        match result {
-            result if result.len() != 2 => Err(ParsePersonError::BadLen),
-            ['']
-            //思考一下年龄的字符串如何处理
-            _ => Err(ParsePersonError::Empty),
-        }
+        let (name, age) = match &result[..]{
+            [name, age] => (
+                name.to_string(),
+                age.parse().map_err(ParsePersonError::ParseInt)?,
+            ),
+            _=>return Err(ParsePersonError::BadLen),
+        };
+
+        if name.is_empty() {
+            return Err(ParsePersonError::NoName);
+        }   
+    
+        Ok(Person{
+            name:name.into(),
+            age,
+        })
     }
 }
 
